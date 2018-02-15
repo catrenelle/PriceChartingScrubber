@@ -1,0 +1,271 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="CatAPIModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Games">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SystemId" Type="int" />
+          <Property Name="GameName" Type="nvarchar" MaxLength="300" Nullable="false" />
+          <Property Name="ReleaseDate" Type="datetime" />
+          <Property Name="ESRBRating" Type="varchar" MaxLength="100" />
+          <Property Name="UPC" Type="varchar" MaxLength="200" />
+          <Property Name="AmazonASIN" Type="varchar" MaxLength="30" />
+          <Property Name="EbayEPID" Type="varchar" MaxLength="30" />
+          <Property Name="PriceChartingID" Type="bigint" />
+          <Property Name="LoosePricing" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="CompletePricing" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="NewPrice" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="GradedPrice" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="BoxOnlyPrice" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="ManualOnlyPrice" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="PriceChartingLoosePrice" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="GameStopLoosePrice" Type="numeric" Precision="10" Scale="2" />
+          <Property Name="Genre" Type="varchar" MaxLength="200" />
+          <Property Name="LastModified" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'CatAPI.PriceCharting.GamesToGenreList' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="GamesToGenreList">
+          <Key>
+            <PropertyRef Name="GameId" />
+            <PropertyRef Name="GenreId" />
+          </Key>
+          <Property Name="GameId" Type="bigint" Nullable="false" />
+          <Property Name="GenreId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GenreList">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="GenreName" Type="varchar" MaxLength="150" />
+        </EntityType>
+        <EntityType Name="SystemList">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SystemName" Type="varchar" MaxLength="150" />
+          <Property Name="URL" Type="varchar" MaxLength="1000" />
+        </EntityType>
+        <Association Name="FK__Games__SystemId__3C69FB99">
+          <End Role="SystemList" Type="Self.SystemList" Multiplicity="0..1" />
+          <End Role="Games" Type="Self.Games" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemList">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="SystemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__GamesToGe__GameI__3E52440B">
+          <End Role="Games" Type="Self.Games" Multiplicity="1" />
+          <End Role="GamesToGenreList" Type="Self.GamesToGenreList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Games">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="GamesToGenreList">
+              <PropertyRef Name="GameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK__GamesToGe__Genre__3F466844">
+          <End Role="GenreList" Type="Self.GenreList" Multiplicity="1" />
+          <End Role="GamesToGenreList" Type="Self.GamesToGenreList" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="GenreList">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="GamesToGenreList">
+              <PropertyRef Name="GenreId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="CatAPIModelStoreContainer">
+          <EntitySet Name="Games" EntityType="Self.Games" Schema="PriceCharting" store:Type="Tables" />
+          <EntitySet Name="GenreList" EntityType="Self.GenreList" Schema="PriceCharting" store:Type="Tables" />
+          <EntitySet Name="SystemList" EntityType="Self.SystemList" Schema="PriceCharting" store:Type="Tables" />
+          <EntitySet Name="GamesToGenreList" EntityType="Self.GamesToGenreList" store:Type="Tables" store:Schema="PriceCharting">
+            <DefiningQuery>SELECT 
+    [GamesToGenreList].[GameId] AS [GameId], 
+    [GamesToGenreList].[GenreId] AS [GenreId]
+    FROM [PriceCharting].[GamesToGenreList] AS [GamesToGenreList]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__Games__SystemId__3C69FB99" Association="Self.FK__Games__SystemId__3C69FB99">
+            <End Role="SystemList" EntitySet="SystemList" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="FK__GamesToGe__GameI__3E52440B" Association="Self.FK__GamesToGe__GameI__3E52440B">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="GamesToGenreList" EntitySet="GamesToGenreList" />
+          </AssociationSet>
+          <AssociationSet Name="FK__GamesToGe__Genre__3F466844" Association="Self.FK__GamesToGe__Genre__3F466844">
+            <End Role="GenreList" EntitySet="GenreList" />
+            <End Role="GamesToGenreList" EntitySet="GamesToGenreList" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="CatAPIModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Game">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SystemId" Type="Int32" />
+          <Property Name="GameName" Type="String" MaxLength="300" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="ReleaseDate" Type="DateTime" Precision="3" />
+          <Property Name="ESRBRating" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="UPC" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="AmazonASIN" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="EbayEPID" Type="String" MaxLength="30" FixedLength="false" Unicode="false" />
+          <Property Name="PriceChartingID" Type="Int64" />
+          <Property Name="LoosePricing" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="CompletePricing" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="NewPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="GradedPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="BoxOnlyPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="ManualOnlyPrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="PriceChartingLoosePrice" Type="Decimal" Precision="10" Scale="2" />
+          <Property Name="GameStopLoosePrice" Type="Decimal" Precision="10" Scale="2" />
+          <NavigationProperty Name="SystemList" Relationship="Self.FK__Games__SystemId__3C69FB99" FromRole="Games" ToRole="SystemList" />
+          <NavigationProperty Name="GenreLists" Relationship="Self.GamesToGenreList" FromRole="Games" ToRole="GenreList" />
+          <Property Name="Genre" Type="String" MaxLength="200" FixedLength="false" Unicode="false" />
+          <Property Name="LastModified" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="GenreList">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="GenreName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Games" Relationship="Self.GamesToGenreList" FromRole="GenreList" ToRole="Games" />
+        </EntityType>
+        <EntityType Name="SystemList">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SystemName" Type="String" MaxLength="150" FixedLength="false" Unicode="false" />
+          <Property Name="URL" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Games" Relationship="Self.FK__Games__SystemId__3C69FB99" FromRole="SystemList" ToRole="Games" />
+        </EntityType>
+        <Association Name="FK__Games__SystemId__3C69FB99">
+          <End Role="SystemList" Type="Self.SystemList" Multiplicity="0..1" />
+          <End Role="Games" Type="Self.Game" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SystemList">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Games">
+              <PropertyRef Name="SystemId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="GamesToGenreList">
+          <End Role="Games" Type="Self.Game" Multiplicity="*" />
+          <End Role="GenreList" Type="Self.GenreList" Multiplicity="*" />
+        </Association>
+        <EntityContainer Name="CatAPIEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Games" EntityType="Self.Game" />
+          <EntitySet Name="GenreLists" EntityType="Self.GenreList" />
+          <EntitySet Name="SystemLists" EntityType="Self.SystemList" />
+          <AssociationSet Name="FK__Games__SystemId__3C69FB99" Association="Self.FK__Games__SystemId__3C69FB99">
+            <End Role="SystemList" EntitySet="SystemLists" />
+            <End Role="Games" EntitySet="Games" />
+          </AssociationSet>
+          <AssociationSet Name="GamesToGenreList" Association="Self.GamesToGenreList">
+            <End Role="Games" EntitySet="Games" />
+            <End Role="GenreList" EntitySet="GenreLists" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="CatAPIModelStoreContainer" CdmEntityContainer="CatAPIEntities">
+          <EntitySetMapping Name="Games">
+            <EntityTypeMapping TypeName="CatAPIModel.Game">
+              <MappingFragment StoreEntitySet="Games">
+                <ScalarProperty Name="LastModified" ColumnName="LastModified" />
+                <ScalarProperty Name="Genre" ColumnName="Genre" />
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="SystemId" ColumnName="SystemId" />
+                <ScalarProperty Name="GameName" ColumnName="GameName" />
+                <ScalarProperty Name="ReleaseDate" ColumnName="ReleaseDate" />
+                <ScalarProperty Name="ESRBRating" ColumnName="ESRBRating" />
+                <ScalarProperty Name="UPC" ColumnName="UPC" />
+                <ScalarProperty Name="AmazonASIN" ColumnName="AmazonASIN" />
+                <ScalarProperty Name="EbayEPID" ColumnName="EbayEPID" />
+                <ScalarProperty Name="PriceChartingID" ColumnName="PriceChartingID" />
+                <ScalarProperty Name="LoosePricing" ColumnName="LoosePricing" />
+                <ScalarProperty Name="CompletePricing" ColumnName="CompletePricing" />
+                <ScalarProperty Name="NewPrice" ColumnName="NewPrice" />
+                <ScalarProperty Name="GradedPrice" ColumnName="GradedPrice" />
+                <ScalarProperty Name="BoxOnlyPrice" ColumnName="BoxOnlyPrice" />
+                <ScalarProperty Name="ManualOnlyPrice" ColumnName="ManualOnlyPrice" />
+                <ScalarProperty Name="PriceChartingLoosePrice" ColumnName="PriceChartingLoosePrice" />
+                <ScalarProperty Name="GameStopLoosePrice" ColumnName="GameStopLoosePrice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="GenreLists">
+            <EntityTypeMapping TypeName="CatAPIModel.GenreList">
+              <MappingFragment StoreEntitySet="GenreList">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="GenreName" ColumnName="GenreName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SystemLists">
+            <EntityTypeMapping TypeName="CatAPIModel.SystemList">
+              <MappingFragment StoreEntitySet="SystemList">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="SystemName" ColumnName="SystemName" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <AssociationSetMapping Name="GamesToGenreList" TypeName="CatAPIModel.GamesToGenreList" StoreEntitySet="GamesToGenreList">
+            <EndProperty Name="Games">
+              <ScalarProperty Name="id" ColumnName="GameId" />
+            </EndProperty>
+            <EndProperty Name="GenreList">
+              <ScalarProperty Name="id" ColumnName="GenreId" />
+            </EndProperty>
+          </AssociationSetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
