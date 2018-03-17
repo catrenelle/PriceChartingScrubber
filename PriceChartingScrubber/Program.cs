@@ -23,7 +23,7 @@ namespace PriceChartingScrubber
             
             using (var sys = new CatAPIEntities())
             {
-                foreach (var item in doc.DocumentNode.Descendants("a").Where(x => x.Attributes["href"].Value.Contains("/console/")))
+                foreach (var item in doc.DocumentNode.Descendants("a").Where(x => x.Attributes["href"] != null && x.Attributes["href"].Value.Contains("/console/")))
                 {
                     string consolename = item.InnerText;
                     string consoleurl = item.Attributes["href"].Value;
@@ -32,9 +32,10 @@ namespace PriceChartingScrubber
                     {
                         sys.SystemLists.Add(new SystemList
                         {
-                            SystemName = consolename,
+                            SystemName = consolename.Replace("&amp;","&"),
                             URL = consoleurl
                         });
+                        sys.SaveChanges();
 
                         Console.WriteLine($"{DateTime.Now.ToString()}\tAdded {consolename}.");
                     }
@@ -52,7 +53,6 @@ namespace PriceChartingScrubber
             UpdateGames();
 
             Console.WriteLine($"Finished {DateTime.Now.ToString()}");
-            var s = Console.ReadKey();
         }
 
         public static void GetGameList(string url)
